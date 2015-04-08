@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<title>GitHub Repo Widget Demo</title>
+	<meta name="description" content="">
+
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<link rel="stylesheet" href="style.css">
+	
+</head>
+<body>
+<div id="container">
+	
+<h1>Example Widgets</h1>
+
+<div style="width: auto; max-width: 600px;">
+
+	<div class="github-widget" data-repo="JoelSutherland/GitHub-jQuery-Repo-Widget"></div>
+	<br>
+	<div class="github-widget" data-repo="JoelSutherland/LESS-Prefixer"></div>
+	<br>
+	<div id="repo"></div>
+	
+</div>
+
+
+
+</div><!-- #container -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script type="text/javascript" src="../jquery.githubRepoWidget.js"></script>
+<script type="text/javascript">
+	var div = $('#repo');
+	div.githubWidget({
+			repo:"JoelSutherland/LESS-Prefixer"
+	});
+	//div.githubWidget( "option", "repo", "AgonLohaj/hssp_curve" );
+</script>
+
+
+</body>
+</html>
