@@ -1,3 +1,5 @@
+
+// Refactored Code:
 ;(function ( $, window, document, undefined ) {
 
 	$.widget( "custom.progressbar", {
@@ -192,7 +194,7 @@
 })( jQuery, window, document );
 
 
-
+// The Initial Plugin:
 
 ;jQuery(document).ready(function($){
 	
