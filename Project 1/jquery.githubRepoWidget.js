@@ -1,17 +1,6 @@
 
 // Refactored Code:
 ;(function ( $, window, document, undefined ) {
-
-	$.widget( "custom.progressbar", {
-		_create: function() {
-			var progress = this.options.value + "%";
-			this.element
-				.addClass( "progressbar" )
-				.text( progress );
-		}
-	});
-
-
 	// define your widget under a namespace of your choice
 	//  with additional parameters e.g.
 	// $.widget( "namespace.widgetname", (optional) - an
