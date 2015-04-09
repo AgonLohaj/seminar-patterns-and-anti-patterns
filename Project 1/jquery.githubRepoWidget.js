@@ -31,92 +31,38 @@
 			// on which the widget was called via this.element.
 			// The options defined above can be accessed
 			// via this.options this.element.addStuff();
-			this.element.addClass("github-widget");
+			this.element.addClass("github-box repo");
+			$widget = $(
+				'<div class="github-box-title">'
+					+'<h3><a class="owner"></a>/<a class="repo"></a></h3>'
+					+'<div class="github-stats">'
+						+'<a class="watchers" title="See watchers">?</a>'
+						+'<a class="forks" title="See forkers">?</a>'
+					+'</div>'
+				+'</div>'
+				+'<div class="github-box-content">'
+					+'<p class="description"><span></span> &mdash; <a>Read More</a></p>'
+					+'<p class="link"></p>'
+				+'</div>'
+				+'<div class="github-box-download">'
+					+'<div class="updated"></div>'
+					+'<a class="download" title="Get an archive of this repository">Download as zip</a>'
+				+'</div>'
+			);
+			this.element.append($widget);
+			this.element._owner = $widget.find(".owner");
+			this.element._repo = $widget.find(".repo");
+			this.element._watchers = $widget.find(".watchers");
+			this.element._forks = $widget.find(".forks");
 			
-			var wrapper = $("<div>");
-			wrapper.addClass("github-box repo");
+			var description = $widget.find(".description");
+			this.element._readMore = description.find("a");
+			this.element._descriptionSpan =  description.find("span");
 			
-			var title = $("<div>"); 
-			title.addClass("github-box-title");
-			title_header = $("<h3>");
-			var owner = $("<a>");
-			owner.addClass("owner");
-			var repo = $("<a>");
-			repo.addClass("repo");
-			
-			title_header.append(owner);
-			title_header.append('/');
-			title_header.append(repo);
-			title.append(title_header);
-			wrapper.append(title);
-			
-			this.element._title = title;
-			this.element._titleHeader = title_header;
-			this.element._owner = owner;
-			this.element._repo = repo;
-			
-			var stats = $("<div>"); 
-			stats.addClass("github-stats");
-			var watchers = $("<a>");
-			watchers.attr("title", "See watchers");
-			watchers.text("?");
-			watchers.addClass("watchers");
-			var forks = $("<a>");
-			forks.attr("title", "See forkers");
-			forks.text("?");
-			forks.addClass("forks");
-			
-			stats.append(watchers);
-			stats.append(forks);
-			title.append(stats);
-			
-			this.element._stats = stats;
-			this.element._watchers = watchers;
-			this.element._forks = forks;
-			
-			var content = $("<div>"); 
-			content.addClass("github-box-content");
-			var description = $("<p>");
-			description.addClass("description");
-			var descriptionSpan = $("<span>");
-			var readMore = $("<a>");
-			readMore.text("Read More");
-			description.append(descriptionSpan);
-			description.append("&mdash;");
-			description.append(readMore);
-			var link = $("<p>");
-			link.addClass("link");
-			
-			content.append(description);
-			content.append(link);
-			
-			wrapper.append(content);
-			
-			this.element._content = content;
-			this.element._description = description;
-			this.element._link =link;
-			this.element._descriptionSpan = descriptionSpan;
-			this.element._readMore = readMore;
-			
-			var downloadWrapper = $("<div>"); 
-			downloadWrapper.addClass("github-box-download");
-			var updated = $("<div>");
-			updated.addClass("updated");
-			var download = $("<a>");
-			download.addClass("download");
-			download.text("Download as zip");
-			download.attr("title", "Get an archive of this repository");
-			
-			downloadWrapper.append(download);
-			downloadWrapper.append(updated);
-			wrapper.append(downloadWrapper);
-			
-			this.element._downloadWrapper = downloadWrapper;
-			this.element._updated = updated;
-			this.element._download = download;
-			$(this.element).append(wrapper); 
+			this.element._download = $widget.find(".download");
+			this.element._updated =  $widget.find(".updated");
+			this.element._link =  $widget.find(".link");
 			this.refreshRepo();
-			console.log("repo:" +  this.options.repo);
 		},
 		// Destroy an instantiated plugin and clean up
 		// modifications the widget has made to the DOM
