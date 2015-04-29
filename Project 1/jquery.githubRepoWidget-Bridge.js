@@ -8,9 +8,16 @@
 	// element: the DOM element the instance was created on
 	var githubWidget = function( options, element ){
 		this.name = "githubWidget";
-		this.options = options;
+		if(options){
+			this.options = options;
+		}
+		else{
+			this.options = $( element ).data( 'plugin-options' );
+		}
+			
 		this.element = $( element );
-		this._init();
+		this.metadata = $( element ).data( 'plugin-options' );
+		this.init();
 	}
 	// the "githubWidget" prototype
 	githubWidget.prototype = {
@@ -23,8 +30,12 @@
 		// This fires when your instance is first created and when
 		// attempting to initialize the widget again (by the bridge)
 		// after it has already been initialized.
-		_init: function(){
+		init: function(){
 			$(this.element).addClass("github-box repo");
+			
+			this.config = $.extend({}, this.defaults, this.options,
+		      this.metadata);
+			
 			$widget = $(
 				'<div class="github-box-title">'
 					+'<h3><a class="owner"></a>/<a class="repo"></a></h3>'

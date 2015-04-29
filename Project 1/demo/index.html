@@ -23,7 +23,8 @@
 	<h4>Refactored here:</h4>
 	<div id="repo"></div>
 	<h4>Using Bridge Pattern:</h4>
-	<div id="bridge"></div>
+	<!-- We will initialise options based on metadata here ('Highly configurable' mutable pattern) -->
+	<div id="bridge" data-plugin-options='{"repo":"AgonLohaj/seminar-patterns-and-anti-patterns"}'></div>
 </div>
 
 
@@ -40,16 +41,14 @@
 <script type="text/javascript" src="../jquery.githubRepoWidget-Refactored.js"></script>
 <script type="text/javascript" src="../jquery.githubRepoWidget-Bridge.js"></script>
 <script type="text/javascript">
-	var div = $('#repo');
-	div.githubWidget({
-			repo:"AgonLohaj/seminar-patterns-and-anti-patterns"
-	});
+	<!-- Widget Factory together with Custom events (Pseudo Pub/Sub) -->
+	var widget = $('#repo').githubWidget();
+	widget.githubWidget("option", "repo", "JoelSutherland/GitHub-jQuery-Repo-Widget");
+	widget.trigger("refresh");
 	
-		
+	<!-- Bridge Factory, meta data are defined on the div itself so we won't assign the options here -->
 	var bridgeWidget = $('#bridge');
-	bridgeWidget.bridgeWidget({
-			repo:"AgonLohaj/seminar-patterns-and-anti-patterns"
-	});
+	bridgeWidget.bridgeWidget();
 </script>
 
 

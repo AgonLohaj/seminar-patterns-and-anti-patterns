@@ -14,13 +14,14 @@
 		//Setup widget (eg. element creation, apply theming
 		// , bind events etc.)
 		_create: function () {
+			var self = this;
 			// _create will automatically run the first time
 			// this widget is called. Put the initial widget
 			// setup code here, then you can access the element
 			// on which the widget was called via this.element.
 			// The options defined above can be accessed
 			// via this.options this.element.addStuff();
-			this.element.addClass("github-box repo");
+			self.element.addClass("github-box repo");
 			$widget = $(
 				'<div class="github-box-title">'
 					+'<h3><a class="owner"></a>/<a class="repo"></a></h3>'
@@ -38,24 +39,50 @@
 					+'<a class="download" title="Get an archive of this repository">Download as zip</a>'
 				+'</div>'
 			);
-			this.element.append($widget);
-			this.element._owner = $widget.find(".owner");
-			this.element._repo = $widget.find(".repo");
-			this.element._watchers = $widget.find(".watchers");
-			this.element._forks = $widget.find(".forks");
+			self.element.append($widget);
+			self.element._owner = $widget.find(".owner");
+			self.element._repo = $widget.find(".repo");
+			self.element._watchers = $widget.find(".watchers");
+			self.element._forks = $widget.find(".forks");
 			
 			var description = $widget.find(".description");
-			this.element._readMore = description.find("a");
-			this.element._descriptionSpan =  description.find("span");
+			self.element._readMore = description.find("a");
+			self.element._descriptionSpan =  description.find("span");
 			
-			this.element._download = $widget.find(".download");
-			this.element._updated =  $widget.find(".updated");
-			this.element._link =  $widget.find(".link");
-			this.refreshRepo();
+			self.element._download = $widget.find(".download");
+			self.element._updated =  $widget.find(".updated");
+			self.element._link =  $widget.find(".link");
+			self.element.bind( "refresh", function(e){
+				if(self.options.repo != null){
+					var repo = self.options.repo,
+					vendorName = repo.split('/')[0],
+					repoName = repo.split('/')[1],
+					vendorUrl = "http://github.com/" + vendorName,
+					repoUrl = "http://github.com/" + vendorName + '/' + repoName;
+				
+					self.element._owner.attr("href", vendorUrl);
+					self.element._owner.attr("title", vendorUrl);
+					self.element._owner.text(vendorName);
+					
+					self.element._repo.attr("href", repoUrl);
+					self.element._repo.attr("title", repoUrl);
+					self.element._repo.text(repoName);
+					
+					self.element._watchers.attr("href", repoUrl + '/watchers');
+					
+					self.element._forks.attr("href", repoUrl + '/network/members');
+					self.element._download.attr("href", repoUrl + '/zipball/master');
+					self.element._readMore.attr("href", repoUrl + '#readme');
+					self.getData();
+				}
+			
+			});
 		},
 		// Destroy an instantiated plugin and clean up
 		// modifications the widget has made to the DOM
 		destroy: function () {
+		
+			console.log("destroy");
 			// this.element.removeStuff();
 			// For UI 1.8, destroy must be invoked from the
 			// base widget
@@ -67,40 +94,16 @@
 		// Respond to any changes the user makes to the
 		// option method
 		_setOption: function ( key, value ) {
-			switch (key) {
-				case "repo":
-					this.options.repo = value;
-					this.refreshRepo();
-					break;
-				default:
-					break;
-			}
-			this._super( key, value );
+			this.options[key] = value;
 			
+			console.log("setting options");
+			console.log(this.options);
+			this._super( key, value );		
 		},
-		refreshRepo: function() {
-			if(this.options.repo != null){
-				var repo = this.options.repo,
-				vendorName = repo.split('/')[0],
-				repoName = repo.split('/')[1],
-				vendorUrl = "http://github.com/" + vendorName,
-				repoUrl = "http://github.com/" + vendorName + '/' + repoName;
+		_refreshRepo: function() {
+			console.log("refreshing");	
+			console.log(this.options);
 			
-				this.element._owner.attr("href", vendorUrl);
-				this.element._owner.attr("title", vendorUrl);
-				this.element._owner.text(vendorName);
-				
-				this.element._repo.attr("href", repoUrl);
-				this.element._repo.attr("title", repoUrl);
-				this.element._repo.text(repoName);
-				
-				this.element._watchers.attr("href", repoUrl + '/watchers');
-				
-				this.element._forks.attr("href", repoUrl + '/network/members');
-				this.element._download.attr("href", repoUrl + '/zipball/master');
-				this.element._readMore.attr("href", repoUrl + '#readme');
-				this.getData();
-			}
 		},
 		getData: function() {
 			var widget = this;
