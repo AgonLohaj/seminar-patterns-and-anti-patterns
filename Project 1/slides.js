@@ -1,16 +1,14 @@
-// Refactored Code:
-;(function ( $, window, document, undefined ) {
-	$.widget( "custom.githubWidget" , {
-		options: { ... }, _create: function () {
-			var self = this;
-			self.element.addClass("github-box repo");
-			$widget = $("...some html code...");
-			self.element.append($widget);
-			self.element.bind( "refresh", function(e){
-				if(self.options.repo != null){
-					// get data
-				}
-			});
-		}, destroy: function () { ... }, _setOption: function ( key, value ) { ... },_refreshRepo: function() { ... }, getData: function() { ... },
-	});
-})( jQuery, window, document );
+var githubWidget = function( options, element ){
+	...
+	this.metadata = $( element ).data( 'plugin-options' );
+	this.init();
+}
+githubWidget.prototype = {
+	init: function(){
+		$(this.element).addClass("github-box repo");
+		this.config = $.extend({}, this.defaults, this.options,
+		  this.metadata);
+	},
+	option: function( key, value ){ ... }
+};
+$.widget.bridge("bridgeWidget", githubWidget);
