@@ -1,78 +1,106 @@
-;(function ( $ ) {
-			if ( ! $.mimiz ) {
-				$.mimiz = {};
+//
+;(function ( $, window, document, undefined ) {
+	
+	//defaults pattern
+	var defaults = {
+		background:{
+			id:'jquery-loader-background',
+			class: "loader-background"
+		},
+		class: "loader",
+		fullscreen : false,
+		enabled_class : "show"
+	};
+
+	//Singleton pattern for Background
+	var Background = (function () {
+	    var instance;
+	 
+	    function createInstance(options) {
+	    	var background = $("<div id='" + options.background.id + "' class='" + options.background.class + "'/>");
+	    	if(jQuery.bgiframe){
+				background.bgiframe();
 			}
-			$.mimiz.loader = function ( options ) {
+	        $("body").append(background);
+	        return background;
+	    }
+	 
+	    return {
+	        create: function () {
+	            if (!instance) {
+	                instance = createInstance();
+	            }
+	            return instance;
+	        }
+	    };
+	})();
 
-				var base = $.mimiz.loader;
+	// The plugin constructor
+	function Loader( element, method_options) {
+		this.el = element;
+		this.$el = $(element);
+		if ( typeof method_options === 'object' || !method_options ) {
+			this.options = $.extend({}, defaults, method_options);
+			if(this.options.fullscreen){
+				this.background = Background.create(this.options);
+				this.$background = $(this.background);
+			}
+			return this.init();
+		}
+	};
 
-				base.settings = $.extend( {}, $.mimiz.loader.defaults, options );
-				var maskHeight = $(document).height();
-				var maskWidth = $(window).width();
-				base.bgDiv = $('<div id="'+base.settings.background.id+'"/>');
-				base.bgDiv.css({
-					zIndex:base.settings.zIndex,
-					position:'absolute',
-					top:'0px',
-					left:'0px',
-					width:maskWidth,
-					height:maskHeight,
-					opacity:base.settings.background.opacity
-				});
-				if(jQuery.bgiframe){
-					base.bgDiv.bgiframe();
-				}
-				base.div = $('<div id="'+base.settings.id+'" class="'+base.settings.className+'"></div>');
-				base.div.css({
-					zIndex:base.settings.zIndex+1,
-					width:base.settings.width,
-					height:base.settings.height
-				});
-				base.div.html(base.settings.content);
-				base.isShowing = false;
-			};
-			$.mimiz.loader.defaults = {
-				content:"Loading ...",
-				className:'loader',
-				id:'jquery-loader',
-				height:60,
-				width:200,
-				zIndex:30000,
-				background:{
-					opacity:0.4,
-					id:'jquery-loader-background'
-				}
-			};
-			$.mimiz.loader.show = function(){
-				var base = $.mimiz.loader;
-				if(!base.isShowing){
-					base.isShowing = true;
-					base.bgDiv.appendTo("body");
-					base.div.appendTo('body');
-					function center($dom){
-						$dom.css("position","absolute");
-						$dom.css("top", ( $(window).height() - $dom.outerHeight() ) / 2+$(window).scrollTop() + "px");
-						$dom.css("left", ( $(window).width() - $dom.outerWidth() ) / 2+$(window).scrollLeft() + "px");
+	// prototype the plugin pattern
+	Loader.prototype  = {
+		init : function(){
+			this.$el.addClass(this.options.class);
+			return this;
+		},
+		show : function(){
+			this.$el.center();
+			this.$el.addClass(this.options.enabled_class);
+			if(this.$background){
+				this.$background.addClass(this.options.enabled_class);
+			}
+		},
+		close : function(){
+			this.$el.removeClass(this.options.enabled_class);
+			if(this.$background){
+				this.$background.removeClass(this.options.enabled_class);
+			}
+		}
+	};
+	// single initialisation pattern
+	$.fn.extend({
+		loader : function ( method_options ) {
+			return this.each( function () {
+				var plugin = $.data(this, 'plugin_loader');
+				if (!plugin) 
+				{
+					plugin = new Loader(this,method_options);
+					$.data(this, 'plugin_loader', plugin);
+				} else {
+					if ( method_options === "destroy" ) {
+						plugin.close();
+						$.data(this, 'plugin_loader', undefined);
+						return;
 					}
-					center(base.div);
+					if ( plugin[method_options] ) {
+						return plugin[ method_options ]();
+					} else {
+						if(method_options){
+							$.error( 'Method ' +  method_options + ' does not exist on jQuery.loader' );
+						}
+					}
 				}
 				
-			};
-
-			$.mimiz.loader.setContent = function(content){
-				var base = $.mimiz.loader;	
-				base.settings.centent = content;
-				base.div.html(content);
-			};
-
-			$.mimiz.loader.close = function(){
-				var base = $.mimiz.loader;
-				if(base.isShowing){
-					base.div.remove();
-					base.bgDiv.remove();
-					base.isShowing = false;
-				}
-				
-			};
-			$.mimiz.loader();
-		} )( jQuery );
+			});
+		},
+		center : function () {
+			this.css("position","absolute");
+			this.css("top", ( $(window).height() - this.outerHeight() ) / 2+$(window).scrollTop() + "px");
+			this.css("left", ( $(window).width() - this.outerWidth() ) / 2+$(window).scrollLeft() + "px");
+			return this;
+		}
+	});
+	
+})( jQuery, window, document );
